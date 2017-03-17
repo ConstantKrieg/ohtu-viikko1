@@ -11,12 +11,7 @@
 }
 
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
-    }
-}
+
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
@@ -26,12 +21,29 @@ apply plugin: 'application'
 
 apply plugin: "jacoco"
 
+jacocoTestReport{
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/jacoco/html"
+    }
+    executionData = files('build/jacoco/test.exec')
+}
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
+
+test { 
+    finalizedBy jacocoTestReport
+}
+
+
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
